@@ -1,0 +1,224 @@
+/* Keksi Loadingscreen - Star Wars Aesthetic */
+
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Roboto:wght@300;400;500&display=swap');
+
+:root {
+    --primary-color: #00d4ff;
+    --accent-color: #ff9800; /* Cookie Orange/Gold */
+    --bg-dark: #0a0e14;
+    --bg-semi: rgba(10, 14, 20, 0.85);
+    --text-main: #e0e6ed;
+    --text-dim: #94a3b8;
+    --border-color: rgba(0, 212, 255, 0.3);
+    --glow-color: rgba(0, 212, 255, 0.5);
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    overflow: hidden;
+    height: 100vh;
+    width: 100vw;
+}
+
+#background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-image: url('sw_bg.png'); /* renamed from png */
+    background-size: cover;
+    background-position: center;
+    filter: brightness(0.6) saturate(1.2) contrast(1.1);
+    z-index: -1;
+    transition: transform 0.5s ease-out;
+}
+
+#overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.8) 100%);
+    pointer-events: none;
+    z-index: 0;
+}
+
+.container {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-bottom: 80px;
+    z-index: 10;
+}
+
+.header {
+    position: absolute;
+    top: 60px;
+    left: 60px;
+    text-align: left;
+}
+
+.header h1 {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 3.5rem;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--text-main);
+    text-shadow: 0 0 20px var(--glow-color);
+    margin-bottom: 10px;
+}
+
+.header .subtitle {
+    font-family: 'Orbitron', sans-serif;
+    font-size: 1.2rem;
+    color: var(--primary-color);
+    letter-spacing: 8px;
+    text-transform: uppercase;
+}
+
+.server-info {
+    position: absolute;
+    top: 60px;
+    right: 60px;
+    text-align: right;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.info-item {
+    background: rgba(0, 212, 255, 0.05);
+    padding: 10px 15px;
+    border-left: 2px solid var(--primary-color);
+    border-radius: 0 4px 4px 0;
+}
+
+.info-label {
+    color: var(--text-dim);
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.info-value {
+    color: #ffffff;
+    font-weight: 500;
+    font-size: 1.1rem;
+    font-family: 'Orbitron', sans-serif;
+}
+
+.loading-section {
+    width: 100%;
+    padding: 0 60px;
+}
+
+.status-text {
+    margin-bottom: 15px;
+    font-family: 'Orbitron', sans-serif;
+    font-size: 0.8rem;
+    letter-spacing: 2px;
+    color: var(--text-main);
+    display: flex;
+    justify-content: space-between;
+}
+
+.progress-container {
+    width: 100%;
+    height: 8px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    position: relative;
+    overflow: hidden;
+}
+
+#progress-bar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(90deg, #00d4ff, #00ede7);
+    box-shadow: 0 0 20px var(--glow-color);
+    transition: width 0.3s cubic-bezier(0.42, 0, 0.58, 1);
+}
+
+.file-indicator {
+    font-family: 'Roboto', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-dim);
+    margin-top: 12px;
+    display: flex;
+    justify-content: space-between;
+    opacity: 0.8;
+}
+
+/* Animations */
+@keyframes flicker {
+    0% { opacity: 0.8; }
+    50% { opacity: 1; }
+    100% { opacity: 0.8; }
+}
+
+.pulse {
+    animation: flicker 2s infinite ease-in-out;
+}
+
+/* Music Indicator */
+.music-toggle {
+    position: fixed;
+    bottom: 30px;
+    right: 40px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    color: var(--text-dim);
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.m-text {
+    font-family: 'Orbitron', sans-serif;
+    letter-spacing: 1px;
+}
+
+.visualizer-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 3px;
+    height: 25px;
+}
+
+.bar {
+    width: 4px;
+    background: var(--primary-color);
+    animation: bar-dance 1s infinite ease-in-out alternate;
+    box-shadow: 0 0 10px var(--glow-color);
+    border-top-left-radius: 2px;
+    border-top-right-radius: 2px;
+}
+
+.bar:nth-child(1) { animation-duration: 0.5s; height: 5px; }
+.bar:nth-child(2) { animation-duration: 0.8s; height: 10px; }
+.bar:nth-child(3) { animation-duration: 1.2s; height: 15px; }
+.bar:nth-child(4) { animation-duration: 0.6s; height: 8px; }
+.bar:nth-child(5) { animation-duration: 0.9s; height: 12px; }
+
+@keyframes bar-dance {
+    0% { height: 4px; border-radius: 0; }
+    100% { height: 22px; border-radius: 2px; }
+}

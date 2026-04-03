@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Republic of Cookie - Loading...</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div id="background"></div>
+    <div id="overlay"></div>
+
+    <div class="container">
+        <div class="header">
+            <div class="subtitle pulse">Galactic Republic</div>
+            <h1>REPUBLIC OF COOKIE</h1>
+        </div>
+
+        <div class="server-info">
+            <div class="info-item">
+                <div class="info-label">Server</div>
+                <div class="info-value" id="server-name">Star Wars Epics</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Map</div>
+                <div class="info-value" id="map-name">Connecting...</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">Gamemode</div>
+                <div class="info-value" id="gamemode">Star Wars RP</div>
+            </div>
+        </div>
+
+        <div class="loading-section">
+            <div class="status-text">
+                <span id="status">Connecting to server...</span>
+                <span id="progress-percent">0%</span>
+            </div>
+            
+            <div class="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+
+            <div class="file-indicator">
+                <span id="current-file">Verbindung wird hergestellt...</span>
+                <span id="files-needed">Resources: 0/0</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Music Player -->
+    <div class="music-toggle">
+        <span class="m-text">Music: ROC Kekse.mp3</span>
+        <div class="visualizer-bars">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </div>
+    </div>
+
+    <audio id="loading-audio" loop autoplay>
+        <source src="music.mp3" type="audio/mpeg">
+    </audio>
+
+    <script src="script.js"></script>
+</body>
+</html>
