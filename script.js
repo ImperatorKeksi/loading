@@ -75,6 +75,34 @@ document.addEventListener("mousemove", function(e) {
     document.getElementById('background').style.transform = "translate(" + x + "px, " + y + "px) scale(1.05)";
 });
 
+/**
+ * IN-GAME TEST BRIDGE (Used by GMod !test_load command)
+ */
+function SetWelcomeMsg(playerName) {
+    const slot1 = document.getElementById('slot-1');
+    if (slot1) {
+        slot1.querySelector('.p-rank').innerText = "CPT";
+        slot1.querySelector('.p-name').innerText = playerName.toUpperCase();
+        slot1.querySelector('.profile-sub').innerText = "66th Division // Command Core";
+    }
+    
+    document.getElementById('status').innerText = "LINK ESTABLISHED: WELCOME BACK, " + playerName.toUpperCase();
+}
+
+/**
+ * AUTO-SCAN ANIMATION (Atmospheric placeholder rotation)
+ */
+const profileNames = ["SYNCING...", "ENCRYPTING...", "SEARCHING...", "DECRYPTING..."];
+let nameIdx = 0;
+
+setInterval(function() {
+    const bioName = document.getElementById('bio-name');
+    if(bioName && bioName.innerText !== "Authentifizierung..." && !bioName.innerText.includes(" ")) {
+        bioName.innerText = profileNames[nameIdx % profileNames.length];
+        nameIdx++;
+    }
+}, 1500);
+
 // Initialization
 window.onload = function() {
     // Start music if blocked by browser autoplay policy
