@@ -1,17 +1,11 @@
 // ═══════════════════════════════════════════════════════════
 // Shadow Squadron – Loadingscreen Script
-// Changelog wird live von GitHub Pages geladen
 // ═══════════════════════════════════════════════════════════
-
-// ── GitHub Pages URL deiner changelog.json ──────────────
-var CHANGELOG_URL = "changelog.json";
-// Alle 30 Sekunden neu laden (falls der Screen lange offen ist)
-var REFRESH_INTERVAL_MS = 30000;
-// ────────────────────────────────────────────────────────
 
 var totalFiles = 100;
 var needsFiles = 0;
 var filesDone  = 0;
+var changelogLoaded = false;
 
 // ─────────────────────────────────────────────────────────
 // GARRY'S MOD HOOKS
@@ -49,15 +43,34 @@ function SetWelcomeMsg(playerName) {
 }
 
 // ─────────────────────────────────────────────────────────
-// CHANGELOG – LADEN VON GITHUB PAGES
+// CHANGELOG – VON LUA (ZUVERLÄSSIG)
+// Lua ruft SetChangelogData(jsonString) auf, sobald der
+// Server die Daten von GitHub geladen hat.
 // ─────────────────────────────────────────────────────────
-function fetchChangelog() {
-    var url = CHANGELOG_URL + "?t=" + Date.now();
+function SetChangelogData(jsonStr) {
+    try {
+        var data = JSON.parse(jsonStr);
+        renderChangelog(data);
+        setLiveDot(true);
+        var now = new Date();
+        var ts = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
+        document.getElementById('cl-last-updated').innerText = "SYNC " + ts;
+        changelogLoaded = true;
+    } catch(e) {
+        setLiveDot(false);
+        showFallback("Parse-Fehler: " + e.message);
+    }
+}
+
+// Fallback: Direkte URL versuchen (klappt manchmal in neueren GMod-Versionen)
+function fetchChangelogFallback() {
+    if (changelogLoaded) return;
     var xhr = new XMLHttpRequest();
-    xhr.open("GET", url, true);
+    xhr.open("GET", "changelog.json?t=" + Date.now(), true);
+    xhr.timeout = 5000;
     xhr.onreadystatechange = function() {
-        if (xhr.readyState !== 4) return;
-        if (xhr.status === 200) {
+        if (xhr.readyState !== 4 || changelogLoaded) return;
+        if (xhr.status === 200 && xhr.responseText) {
             try {
                 var data = JSON.parse(xhr.responseText);
                 renderChangelog(data);
@@ -65,21 +78,20 @@ function fetchChangelog() {
                 var now = new Date();
                 var ts = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
                 document.getElementById('cl-last-updated').innerText = "SYNC " + ts;
-            } catch(e) {
-                setLiveDot(false);
-                showFallback();
-            }
-        } else {
-            setLiveDot(false);
-            showFallback();
+                changelogLoaded = true;
+            } catch(e) { /* ignore, wait for Lua */ }
         }
     };
-    xhr.onerror = function() { setLiveDot(false); showFallback(); };
-    xhr.send();
+    xhr.onerror = function() { /* ignore, Lua wird es liefern */ };
+    try { xhr.send(); } catch(e) { /* ignore */ }
 }
 
-function showFallback() {
-    renderChangelog({ version: "v3.0", entries: [{ date: "---", type: "fix", text: "Changelog konnte nicht geladen werden." }] });
+function showFallback(msg) {
+    if (changelogLoaded) return;
+    renderChangelog({
+        version: "v3.0",
+        entries: [{ date: "---", type: "fix", text: msg || "Changelog wird geladen..." }]
+    });
 }
 
 function renderChangelog(data) {
@@ -152,10 +164,21 @@ document.addEventListener("mousemove", function(e) {
 // INIT
 // ─────────────────────────────────────────────────────────
 window.onload = function() {
-    // Changelog sofort laden
-    fetchChangelog();
-    // Danach alle 30s aktualisieren (für sehr lange Ladezeiten)
-    setInterval(fetchChangelog, REFRESH_INTERVAL_MS);
+    // Sofort XHR-Fallback versuchen (klappt manchmal)
+    fetchChangelogFallback();
+
+    // Nach 3s nochmal versuchen falls noch nicht geladen
+    setTimeout(function() {
+        if (!changelogLoaded) fetchChangelogFallback();
+    }, 3000);
+
+    // Nach 8s Fehlermeldung wenn Lua auch nichts geschickt hat
+    setTimeout(function() {
+        if (!changelogLoaded) {
+            setLiveDot(false);
+            showFallback("Warte auf Server-Daten...");
+        }
+    }, 8000);
 
     // Audio
     var audio = document.getElementById("loading-audio");
