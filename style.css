@@ -311,7 +311,7 @@ body {
 
 .cl-entry {
     display: grid;
-    grid-template-columns: 72px 48px 1fr;
+    grid-template-columns: 72px 48px minmax(0, 1fr);
     align-items: center;
     gap: 8px;
     padding: 10px 12px;
@@ -361,6 +361,9 @@ body {
     color: var(--text-main);
     line-height: 1.4;
     font-weight: 300;
+    overflow: hidden;
+    word-break: break-word;
+    min-width: 0;
 }
 
 .changelog-footer {
