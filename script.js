@@ -191,7 +191,7 @@ window.onload = function() {
     var iconMuted  = document.getElementById("icon-muted");
 
     var isMuted    = false;
-    var lastVol    = 0.5;
+
 
     function setVolume(val) {
         val = Math.min(1, Math.max(0, val));
@@ -217,7 +217,7 @@ window.onload = function() {
     }
 
     if (audio) {
-        audio.volume = 0.5;
+        audio.volume = 0.1;
 
         // Autoplay (GMod unterstützt es, Browser benötigen Klick)
         var playAttempt = audio.play();
