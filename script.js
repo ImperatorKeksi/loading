@@ -52,34 +52,34 @@ function SetWelcomeMsg(playerName) {
 // CHANGELOG – LADEN VON GITHUB PAGES
 // ─────────────────────────────────────────────────────────
 function fetchChangelog() {
-    // Cache-buster damit GitHub Pages nicht die alte Version liefert
     var url = CHANGELOG_URL + "?t=" + Date.now();
-
-    fetch(url)
-        .then(function(res) {
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            return res.json();
-        })
-        .then(function(data) {
-            renderChangelog(data);
-            setLiveDot(true);
-            // Timestamp in Footer
-            var now = new Date();
-            var ts  = now.getHours().toString().padStart(2,"0") + ":"
-                    + now.getMinutes().toString().padStart(2,"0");
-            document.getElementById('cl-last-updated').innerText = "SYNC " + ts;
-        })
-        .catch(function(err) {
-            console.warn("[ShadowSQ] Changelog konnte nicht geladen werden:", err);
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", url, true);
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState !== 4) return;
+        if (xhr.status === 200) {
+            try {
+                var data = JSON.parse(xhr.responseText);
+                renderChangelog(data);
+                setLiveDot(true);
+                var now = new Date();
+                var ts = now.getHours().toString().padStart(2,"0") + ":" + now.getMinutes().toString().padStart(2,"0");
+                document.getElementById('cl-last-updated').innerText = "SYNC " + ts;
+            } catch(e) {
+                setLiveDot(false);
+                showFallback();
+            }
+        } else {
             setLiveDot(false);
-            // Fallback: statische Einträge zeigen
-            renderChangelog({
-                version: "v3.0",
-                entries: [
-                    { date: "---", type: "fix", text: "Changelog konnte nicht geladen werden. Bitte Server-Admin informieren." }
-                ]
-            });
-        });
+            showFallback();
+        }
+    };
+    xhr.onerror = function() { setLiveDot(false); showFallback(); };
+    xhr.send();
+}
+
+function showFallback() {
+    renderChangelog({ version: "v3.0", entries: [{ date: "---", type: "fix", text: "Changelog konnte nicht geladen werden." }] });
 }
 
 function renderChangelog(data) {
