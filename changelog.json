@@ -1,15 +1,60 @@
 {
-  "version": "v3.0",
-  "entries": [
-    { "date": "23.05.2025", "type": "new",    "text": "Shadow Squadron Loadingscreen v3 gestartet" },
-    { "date": "23.05.2025", "type": "fix",    "text": "Biometric Scanner Authentifizierungs-Bug behoben" },
-    { "date": "22.05.2025", "type": "update", "text": "66th Division Dienstgrade aktualisiert" },
-    { "date": "21.05.2025", "type": "new",    "text": "Neues Addon: Venator Hangar Bay hinzugefügt" },
-    { "date": "20.05.2025", "type": "remove", "text": "Altes Loadingscreen-System entfernt" },
-    { "date": "19.05.2025", "type": "update", "text": "Serverperformance optimiert – neue Map gm_venator_v3" },
-    { "date": "18.05.2025", "type": "fix",    "text": "Spawn-Probleme auf dem Deck behoben" },
-    { "date": "17.05.2025", "type": "new",    "text": "Neues Whitelist-System für Spezialeinheiten eingeführt" },
-    { "date": "15.05.2025", "type": "update", "text": "Regelwerk aktualisiert – Abschnitt 4 und 7 überarbeitet" },
-    { "date": "12.05.2025", "type": "fix",    "text": "Crash beim Betreten des Server-Briefing-Raums behoben" }
-  ]
+	"version": "v3.0",
+	"entries": [
+		{
+			"date": "23.05.2026",
+			"type": "new",
+			"text": "12121212"
+		},
+		{
+			"date": "23.05.2025",
+			"type": "new",
+			"text": "Shadow Squadron Loadingscreen v3 gestartet"
+		},
+		{
+			"date": "23.05.2025",
+			"type": "fix",
+			"text": "Biometric Scanner Authentifizierungs-Bug behoben"
+		},
+		{
+			"date": "22.05.2025",
+			"type": "update",
+			"text": "66th Division Dienstgrade aktualisiert"
+		},
+		{
+			"date": "21.05.2025",
+			"type": "new",
+			"text": "Neues Addon: Venator Hangar Bay hinzugefügt"
+		},
+		{
+			"date": "20.05.2025",
+			"type": "remove",
+			"text": "Altes Loadingscreen-System entfernt"
+		},
+		{
+			"date": "19.05.2025",
+			"type": "update",
+			"text": "Serverperformance optimiert – neue Map gm_venator_v3"
+		},
+		{
+			"date": "18.05.2025",
+			"type": "fix",
+			"text": "Spawn-Probleme auf dem Deck behoben"
+		},
+		{
+			"date": "17.05.2025",
+			"type": "new",
+			"text": "Neues Whitelist-System für Spezialeinheiten eingeführt"
+		},
+		{
+			"date": "15.05.2025",
+			"type": "update",
+			"text": "Regelwerk aktualisiert – Abschnitt 4 und 7 überarbeitet"
+		},
+		{
+			"date": "12.05.2025",
+			"type": "fix",
+			"text": "Crash beim Betreten des Server-Briefing-Raums behoben"
+		}
+	]
 }
