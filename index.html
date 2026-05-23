@@ -11,11 +11,13 @@
     <div id="overlay"></div>
 
     <div class="container">
+        <!-- TOP LEFT: Header -->
         <div class="header">
             <div class="subtitle pulse">Galactic Republic</div>
             <h1>SHADOW SQUADRON</h1>
         </div>
 
+        <!-- TOP RIGHT: Server Info -->
         <div class="server-info">
             <div class="info-item">
                 <div class="info-label">Server</div>
@@ -31,24 +33,36 @@
             </div>
         </div>
 
+        <!-- LEFT PANEL: Biometric Card (Charaktere) -->
         <div class="biometric-card">
             <div class="bio-header">REPUBLIC DATABASE // IDENTIFIED PROFILES</div>
-            <div class="bio-content">
+            <div class="bio-content" id="bio-content">
                 <!-- Slot 1 -->
                 <div class="char-profile-slot" id="slot-1">
                     <div class="profile-main">
-                        <span class="p-rank">---</span>
+                        <span class="p-rank" id="char1-rank">---</span>
                         <span class="p-name" id="bio-name">Authentifizierung...</span>
                     </div>
                     <div class="profile-sub" id="bio-unit">Identifiziere Einheit...</div>
+                    <div class="profile-tags" id="char1-tags"></div>
                 </div>
                 <!-- Slot 2 -->
-                <div class="char-profile-slot dim">
+                <div class="char-profile-slot dim" id="slot-2">
                     <div class="profile-main">
-                        <span class="p-rank">---</span>
-                        <span class="p-name">Zusatzprofil gefunden</span>
+                        <span class="p-rank" id="char2-rank">---</span>
+                        <span class="p-name" id="char2-name">Zusatzprofil gefunden</span>
                     </div>
-                    <div class="profile-sub">Suche Daten...</div>
+                    <div class="profile-sub" id="char2-unit">Suche Daten...</div>
+                    <div class="profile-tags" id="char2-tags"></div>
+                </div>
+                <!-- Slot 3 (optional, initially hidden) -->
+                <div class="char-profile-slot dim hidden" id="slot-3">
+                    <div class="profile-main">
+                        <span class="p-rank" id="char3-rank">---</span>
+                        <span class="p-name" id="char3-name">---</span>
+                    </div>
+                    <div class="profile-sub" id="char3-unit">---</div>
+                    <div class="profile-tags" id="char3-tags"></div>
                 </div>
             </div>
             <div class="bio-footer">
@@ -57,16 +71,66 @@
             </div>
         </div>
 
+        <!-- RIGHT PANEL: Changelog -->
+        <div class="changelog-card">
+            <div class="changelog-header">
+                <span class="changelog-icon">◈</span>
+                SERVER CHANGELOG
+                <span class="changelog-version" id="cl-version">v1.0</span>
+            </div>
+            <div class="changelog-entries" id="changelog-entries">
+                <!-- Entries werden via JS befüllt -->
+                <div class="cl-entry">
+                    <div class="cl-date">23.05.2025</div>
+                    <div class="cl-tag tag-new">NEU</div>
+                    <div class="cl-text">Shadow Squadron Loadingscreen v2 launched</div>
+                </div>
+                <div class="cl-entry">
+                    <div class="cl-date">23.05.2025</div>
+                    <div class="cl-tag tag-fix">FIX</div>
+                    <div class="cl-text">Biometric scanner Authentifizierungs-Bug behoben</div>
+                </div>
+                <div class="cl-entry">
+                    <div class="cl-date">22.05.2025</div>
+                    <div class="cl-tag tag-update">UPDATE</div>
+                    <div class="cl-text">66th Division Dienstgrade aktualisiert</div>
+                </div>
+                <div class="cl-entry">
+                    <div class="cl-date">21.05.2025</div>
+                    <div class="cl-tag tag-new">NEU</div>
+                    <div class="cl-text">Neues Addon: Venator Hangar Bay hinzugefügt</div>
+                </div>
+                <div class="cl-entry">
+                    <div class="cl-date">20.05.2025</div>
+                    <div class="cl-tag tag-remove">ENTF</div>
+                    <div class="cl-text">Altes Loadingscreen-System entfernt</div>
+                </div>
+                <div class="cl-entry">
+                    <div class="cl-date">19.05.2025</div>
+                    <div class="cl-tag tag-update">UPDATE</div>
+                    <div class="cl-text">Serverperformance optimiert – neue map gm_venator</div>
+                </div>
+                <div class="cl-entry">
+                    <div class="cl-date">18.05.2025</div>
+                    <div class="cl-tag tag-fix">FIX</div>
+                    <div class="cl-text">Spawn-Probleme auf dem Deck behoben</div>
+                </div>
+            </div>
+            <div class="changelog-footer">
+                <div class="scan-bar"></div>
+                <span class="pulse">TRANSMISSION ENCRYPTED // REPUBLIC INTEL NET</span>
+            </div>
+        </div>
+
+        <!-- BOTTOM: Loading Bar -->
         <div class="loading-section">
             <div class="status-text">
                 <span id="status">Connecting to server...</span>
                 <span id="progress-percent">0%</span>
             </div>
-            
             <div class="progress-container">
                 <div id="progress-bar"></div>
             </div>
-
             <div class="file-indicator">
                 <span id="current-file">Verbindung wird hergestellt...</span>
                 <span id="files-needed">Resources: 0/0</span>
