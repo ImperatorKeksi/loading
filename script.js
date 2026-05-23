@@ -217,7 +217,7 @@ window.onload = function() {
     }
 
     if (audio) {
-        audio.volume = 0.1;
+        audio.volume = 0.05;
 
         // Autoplay (GMod unterstützt es, Browser benötigen Klick)
         var playAttempt = audio.play();
