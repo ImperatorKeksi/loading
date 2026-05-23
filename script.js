@@ -180,10 +180,71 @@ window.onload = function() {
         }
     }, 8000);
 
-    // Audio
-    var audio = document.getElementById("loading-audio");
+    // ── MUSIC PLAYER ──────────────────────────────────────
+    var audio      = document.getElementById("loading-audio");
+    var player     = document.getElementById("music-player");
+    var muteBtn    = document.getElementById("mp-mute");
+    var slider     = document.getElementById("mp-volume");
+    var fill       = document.getElementById("mp-volume-fill");
+    var volLabel   = document.getElementById("mp-vol-label");
+    var iconSound  = document.getElementById("icon-sound");
+    var iconMuted  = document.getElementById("icon-muted");
+
+    var isMuted    = false;
+    var lastVol    = 0.5;
+
+    function setVolume(val) {
+        val = Math.min(1, Math.max(0, val));
+        audio.volume  = val;
+        slider.value  = Math.round(val * 100);
+        fill.style.width = (val * 100) + "%";
+        volLabel.innerText = Math.round(val * 100) + "%";
+        lastVol = val > 0 ? val : lastVol;
+    }
+
+    function setMute(mute) {
+        isMuted = mute;
+        audio.muted = mute;
+        if (mute) {
+            player.classList.add("muted");
+            iconSound.style.display = "none";
+            iconMuted.style.display = "block";
+        } else {
+            player.classList.remove("muted");
+            iconSound.style.display = "block";
+            iconMuted.style.display = "none";
+        }
+    }
+
     if (audio) {
         audio.volume = 0.5;
-        document.body.onclick = function() { audio.play(); };
+
+        // Autoplay (GMod unterstützt es, Browser benötigen Klick)
+        var playAttempt = audio.play();
+        if (playAttempt !== undefined) {
+            playAttempt.catch(function() {
+                // Warte auf ersten Klick im Browser-Preview
+                document.body.addEventListener('click', function tryPlay() {
+                    audio.play();
+                    document.body.removeEventListener('click', tryPlay);
+                });
+            });
+        }
+    }
+
+    if (muteBtn) {
+        muteBtn.addEventListener('click', function() {
+            setMute(!isMuted);
+        });
+    }
+
+    if (slider) {
+        slider.addEventListener('input', function() {
+            var val = parseInt(slider.value) / 100;
+            setVolume(val);
+            // Wenn Slider auf 0 → mute; sonst unmute
+            if (val === 0) { setMute(true); }
+            else           { setMute(false); }
+        });
     }
 };
