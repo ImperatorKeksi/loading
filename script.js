@@ -8,7 +8,7 @@ var filesDone = 0;
  * Initial Server Information
  */
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
-    document.getElementById('server-name').innerText = servername || "Republic of Cookie";
+    document.getElementById('server-name').innerText = servername || "Shadow Squadron";
     document.getElementById('map-name').innerText = mapname || "Unknown Map";
     document.getElementById('gamemode').innerText = gamemode || "Star Wars RP";
 }
