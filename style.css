@@ -329,7 +329,7 @@ body {
 .music-player {
     position: fixed;
     bottom: 22px;
-    right: var(--side-pad);
+    left: var(--side-pad);
     display: flex;
     align-items: center;
     gap: 10px;
