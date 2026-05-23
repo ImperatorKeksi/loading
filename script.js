@@ -4,7 +4,7 @@
 // ═══════════════════════════════════════════════════════════
 
 // ── GitHub Pages URL deiner changelog.json ──────────────
-var CHANGELOG_URL = "https://imperatorkelsi.github.io/loading/changelog.json";
+var CHANGELOG_URL = "changelog.json";
 // Alle 30 Sekunden neu laden (falls der Screen lange offen ist)
 var REFRESH_INTERVAL_MS = 30000;
 // ────────────────────────────────────────────────────────
