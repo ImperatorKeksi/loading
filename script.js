@@ -1,30 +1,21 @@
 // ═══════════════════════════════════════════════════════════
-// Shadow Squadron – GMod Loading Screen Script
+// Shadow Squadron – Loadingscreen Script
+// Changelog wird live von GitHub Pages geladen
 // ═══════════════════════════════════════════════════════════
+
+// ── GitHub Pages URL deiner changelog.json ──────────────
+var CHANGELOG_URL = "https://imperatorkelsi.github.io/loading/changelog.json";
+// Alle 30 Sekunden neu laden (falls der Screen lange offen ist)
+var REFRESH_INTERVAL_MS = 30000;
+// ────────────────────────────────────────────────────────
 
 var totalFiles = 100;
 var needsFiles = 0;
 var filesDone  = 0;
 
-var CHANGELOG = [
-    { date: "23.05.2025", type: "new",    text: "Shadow Squadron Loadingscreen v3 – Changelog & Charakterprofil-System" },
-    { date: "23.05.2025", type: "fix",    text: "Biometric Scanner Authentifizierungs-Bug behoben" },
-    { date: "22.05.2025", type: "update", text: "66th Division Dienstgrade und Einheitenzuweisungen aktualisiert" },
-    { date: "21.05.2025", type: "new",    text: "Neues Addon: Venator Hangar Bay hinzugefügt" },
-    { date: "20.05.2025", type: "remove", text: "Altes Loadingscreen-System vollständig entfernt" },
-    { date: "19.05.2025", type: "update", text: "Serverperformance optimiert – neue Map gm_venator_v3" },
-    { date: "18.05.2025", type: "fix",    text: "Spawn-Probleme auf dem Deck behoben" },
-    { date: "17.05.2025", type: "new",    text: "Neues Whitelist-System für Spezialeinheiten eingeführt" },
-    { date: "15.05.2025", type: "update", text: "Regelwerk aktualisiert – Abschnitt 4 und 7 überarbeitet" },
-    { date: "12.05.2025", type: "fix",    text: "Crash beim Betreten des Server-Briefing-Raums behoben" },
-];
-
-var CHANGELOG_VERSION = "v3.0";
-
 // ─────────────────────────────────────────────────────────
 // GARRY'S MOD HOOKS
 // ─────────────────────────────────────────────────────────
-
 function GameDetails(servername, serverurl, mapname, maxplayers, steamid, gamemode) {
     document.getElementById('server-name').innerText = servername || "Shadow Squadron";
     document.getElementById('map-name').innerText    = mapname    || "Unknown Map";
@@ -44,91 +35,92 @@ function SetFilesNeeded(needed) {
 }
 
 function DownloadingFile(fileName) {
-    var cleanName = fileName.replace(/"/g, "");
-    document.getElementById('current-file').innerText = "Downloading: " + cleanName;
+    document.getElementById('current-file').innerText =
+        "Downloading: " + fileName.replace(/"/g, "");
 }
 
 function SetStatusChanged(status) {
     document.getElementById('status').innerText = status;
 }
 
-// ─────────────────────────────────────────────────────────
-// CHARAKTER-PROFIL SYSTEM
-// Lua-Aufruf: SetCharacterProfiles(jsonString)
-// ─────────────────────────────────────────────────────────
-function SetCharacterProfiles(jsonString) {
-    var chars;
-    try {
-        chars = JSON.parse(jsonString);
-    } catch(e) {
-        console.warn("SetCharacterProfiles: ungültiges JSON", e);
-        return;
-    }
-    renderCharacters(chars);
-}
-
-function renderCharacters(chars) {
-    // Feste IDs aus dem HTML – keine dynamische querySelector-Magie
-    var cfg = [
-        { slot: "slot-1", rank: "char1-rank", name: "bio-name",   unit: "bio-unit",   tags: "char1-tags" },
-        { slot: "slot-2", rank: "char2-rank", name: "char2-name",  unit: "char2-unit", tags: "char2-tags" },
-        { slot: "slot-3", rank: "char3-rank", name: "char3-name",  unit: "char3-unit", tags: "char3-tags" },
-    ];
-
-    cfg.forEach(function(ids, i) {
-        var slot = document.getElementById(ids.slot);
-        if (!slot) return;
-
-        if (i >= chars.length) {
-            slot.classList.add("hidden");
-            return;
-        }
-
-        var c = chars[i];
-        slot.classList.remove("hidden", "dim");
-
-        var rankEl = document.getElementById(ids.rank);
-        var nameEl = document.getElementById(ids.name);
-        var unitEl = document.getElementById(ids.unit);
-        var tagsEl = document.getElementById(ids.tags);
-
-        if (rankEl) rankEl.innerText = (c.rank || "---").toUpperCase();
-        if (nameEl) nameEl.innerText = (c.name || "---").toUpperCase();
-        if (unitEl) unitEl.innerText = c.unit || "Unbekannte Einheit";
-        if (tagsEl) tagsEl.innerHTML = (c.tags && c.tags.length)
-            ? c.tags.map(function(t){ return '<span class="char-tag">'+t+'</span>'; }).join('') : '';
-    });
+function SetWelcomeMsg(playerName) {
+    document.getElementById('status').innerText =
+        "LINK ESTABLISHED: WILLKOMMEN ZURÜCK, " + playerName.toUpperCase();
 }
 
 // ─────────────────────────────────────────────────────────
-// CHANGELOG RENDER
+// CHANGELOG – LADEN VON GITHUB PAGES
 // ─────────────────────────────────────────────────────────
-function renderChangelog() {
+function fetchChangelog() {
+    // Cache-buster damit GitHub Pages nicht die alte Version liefert
+    var url = CHANGELOG_URL + "?t=" + Date.now();
+
+    fetch(url)
+        .then(function(res) {
+            if (!res.ok) throw new Error("HTTP " + res.status);
+            return res.json();
+        })
+        .then(function(data) {
+            renderChangelog(data);
+            setLiveDot(true);
+            // Timestamp in Footer
+            var now = new Date();
+            var ts  = now.getHours().toString().padStart(2,"0") + ":"
+                    + now.getMinutes().toString().padStart(2,"0");
+            document.getElementById('cl-last-updated').innerText = "SYNC " + ts;
+        })
+        .catch(function(err) {
+            console.warn("[ShadowSQ] Changelog konnte nicht geladen werden:", err);
+            setLiveDot(false);
+            // Fallback: statische Einträge zeigen
+            renderChangelog({
+                version: "v3.0",
+                entries: [
+                    { date: "---", type: "fix", text: "Changelog konnte nicht geladen werden. Bitte Server-Admin informieren." }
+                ]
+            });
+        });
+}
+
+function renderChangelog(data) {
     var container = document.getElementById('changelog-entries');
     var versionEl = document.getElementById('cl-version');
     if (!container) return;
 
-    if (versionEl) versionEl.innerText = CHANGELOG_VERSION;
+    if (versionEl && data.version) versionEl.innerText = data.version;
 
+    var entries   = data.entries || [];
     var tagLabels = { new: "NEU", fix: "FIX", update: "UPDATE", remove: "ENTF" };
 
-    container.innerHTML = CHANGELOG.map(function(entry, idx) {
+    if (entries.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-dim);font-size:0.75rem;padding:20px;text-align:center;letter-spacing:2px;">KEINE EINTRÄGE</div>';
+        return;
+    }
+
+    container.innerHTML = entries.map(function(entry, idx) {
         var label = tagLabels[entry.type] || entry.type.toUpperCase();
-        var delay  = (idx * 80) + "ms";
+        var delay = (idx * 60) + "ms";
         return '<div class="cl-entry" style="animation-delay:' + delay + '">'
-             + '<div class="cl-date">' + entry.date + '</div>'
-             + '<div class="cl-tag tag-' + entry.type + '">' + label + '</div>'
-             + '<div class="cl-text">' + entry.text + '</div>'
+             +   '<div class="cl-date">' + escapeHtml(entry.date) + '</div>'
+             +   '<div class="cl-tag tag-' + escapeHtml(entry.type) + '">' + label + '</div>'
+             +   '<div class="cl-text">' + escapeHtml(entry.text) + '</div>'
              + '</div>';
     }).join('');
 }
 
-// ─────────────────────────────────────────────────────────
-// WELCOME MESSAGE
-// ─────────────────────────────────────────────────────────
-function SetWelcomeMsg(playerName) {
-    document.getElementById('status').innerText =
-        "LINK ESTABLISHED: WILLKOMMEN ZURÜCK, " + playerName.toUpperCase();
+function setLiveDot(ok) {
+    var dot = document.querySelector('.cl-live-dot');
+    if (!dot) return;
+    if (ok) { dot.classList.remove('error'); }
+    else    { dot.classList.add('error');    }
+}
+
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g,"&amp;")
+        .replace(/</g,"&lt;")
+        .replace(/>/g,"&gt;")
+        .replace(/"/g,"&quot;");
 }
 
 // ─────────────────────────────────────────────────────────
@@ -140,10 +132,10 @@ function updateFileCount() {
 }
 
 function updateProgressBar() {
-    var percent = totalFiles > 0 ? (filesDone / totalFiles) * 100 : 0;
-    percent = Math.min(100, Math.max(0, percent));
-    document.getElementById('progress-bar').style.width   = percent + "%";
-    document.getElementById('progress-percent').innerText = Math.round(percent) + "%";
+    var pct = totalFiles > 0 ? (filesDone / totalFiles) * 100 : 0;
+    pct = Math.min(100, Math.max(0, pct));
+    document.getElementById('progress-bar').style.width   = pct + "%";
+    document.getElementById('progress-percent').innerText = Math.round(pct) + "%";
 }
 
 // ─────────────────────────────────────────────────────────
@@ -157,26 +149,15 @@ document.addEventListener("mousemove", function(e) {
 });
 
 // ─────────────────────────────────────────────────────────
-// AUTO-SCAN ANIMATION
-// ─────────────────────────────────────────────────────────
-var profileNames = ["SYNCING...", "ENCRYPTING...", "SEARCHING...", "DECRYPTING..."];
-var nameIdx = 0;
-
-setInterval(function() {
-    var bioName = document.getElementById('bio-name');
-    if (bioName && bioName.innerText === "Authentifizierung...") {
-        bioName.innerText = profileNames[nameIdx % profileNames.length];
-        nameIdx++;
-    }
-}, 1500);
-
-// ─────────────────────────────────────────────────────────
-// INIT – KEIN renderCharacters(DEFAULT_CHARS) hier!
-// Lua befüllt die Slots via SetCharacterProfiles()
+// INIT
 // ─────────────────────────────────────────────────────────
 window.onload = function() {
-    renderChangelog();
+    // Changelog sofort laden
+    fetchChangelog();
+    // Danach alle 30s aktualisieren (für sehr lange Ladezeiten)
+    setInterval(fetchChangelog, REFRESH_INTERVAL_MS);
 
+    // Audio
     var audio = document.getElementById("loading-audio");
     if (audio) {
         audio.volume = 0.5;
