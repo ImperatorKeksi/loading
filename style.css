@@ -15,6 +15,14 @@
     --tag-fix: #00d4ff;
     --tag-update: #ff9800;
     --tag-remove: #ff4444;
+
+    /* Layout-Konstanten – an einer Stelle ändern */
+    --side-pad: 80px;
+    --top-header: 50px;
+    --header-h: 120px;
+    --bar-h: 110px;
+    --card-top: 185px;   /* header-top + header-h + 15px gap */
+    --card-bot: 125px;   /* bar-h + 15px gap */
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -35,7 +43,7 @@ body {
     background-image: url('sw_bg.png');
     background-size: cover;
     background-position: center;
-    filter: brightness(0.5) saturate(1.2) contrast(1.1);
+    filter: brightness(0.45) saturate(1.2) contrast(1.1);
     z-index: -1;
     transition: transform 0.5s ease-out;
 }
@@ -44,7 +52,7 @@ body {
     position: fixed;
     top: 0; left: 0;
     width: 100%; height: 100%;
-    background: radial-gradient(circle at center, transparent 0%, rgba(0,0,0,0.85) 100%);
+    background: radial-gradient(ellipse at center, transparent 20%, rgba(0,0,0,0.8) 100%);
     pointer-events: none;
     z-index: 0;
 }
@@ -54,34 +62,30 @@ body {
     max-width: 1600px;
     margin: 0 auto;
     height: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    padding: 0 120px;
     z-index: 10;
 }
 
 /* ─── HEADER ─── */
 .header {
     position: absolute;
-    top: 60px;
-    left: 120px;
+    top: var(--top-header);
+    left: var(--side-pad);
     text-align: left;
 }
 
 .header h1 {
     font-family: 'Orbitron', sans-serif;
-    font-size: 3.2rem;
+    font-size: clamp(2rem, 3.5vw, 3.2rem);
     letter-spacing: 4px;
     text-transform: uppercase;
     color: var(--text-main);
     text-shadow: 0 0 20px var(--glow-color);
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .header .subtitle {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.1rem;
+    font-size: clamp(0.7rem, 1vw, 1rem);
     color: var(--primary-color);
     letter-spacing: 8px;
     text-transform: uppercase;
@@ -90,24 +94,24 @@ body {
 /* ─── SERVER INFO ─── */
 .server-info {
     position: absolute;
-    top: 60px;
-    right: 120px;
+    top: var(--top-header);
+    right: var(--side-pad);
     text-align: right;
     display: flex;
-    flex-direction: column;
-    gap: 12px;
+    flex-direction: row;
+    gap: 10px;
+    align-items: flex-start;
 }
 
 .info-item {
     background: rgba(0, 212, 255, 0.05);
     padding: 8px 14px;
-    border-left: 2px solid var(--primary-color);
-    border-radius: 0 4px 4px 0;
+    border-bottom: 2px solid var(--primary-color);
 }
 
 .info-label {
     color: var(--text-dim);
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     text-transform: uppercase;
     letter-spacing: 2px;
 }
@@ -115,20 +119,21 @@ body {
 .info-value {
     color: #ffffff;
     font-weight: 500;
-    font-size: 1rem;
+    font-size: 0.85rem;
     font-family: 'Orbitron', sans-serif;
+    white-space: nowrap;
 }
 
 /* ─── BIOMETRIC CARD (LEFT) ─── */
 .biometric-card {
     position: absolute;
-    left: 120px;
-    top: 210px;
-    bottom: 180px;
-    width: 480px;
+    left: var(--side-pad);
+    top: var(--card-top);
+    bottom: var(--card-bot);
+    width: clamp(300px, 30vw, 460px);
     background: linear-gradient(135deg, var(--bg-semi) 0%, rgba(10, 14, 20, 0.5) 100%);
     border: 1px solid var(--border-color);
-    padding: 28px;
+    padding: 22px 24px;
     backdrop-filter: blur(25px);
     border-left: 4px solid var(--primary-color);
     box-shadow: 25px 25px 80px rgba(0, 0, 0, 0.9);
@@ -153,8 +158,8 @@ body {
 }
 
 .char-profile-slot {
-    margin-bottom: 16px;
-    padding: 16px;
+    margin-bottom: 12px;
+    padding: 14px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.05);
     transition: border-color 0.3s;
@@ -168,49 +173,50 @@ body {
 .profile-main {
     display: flex;
     align-items: center;
-    gap: 12px;
-    margin-bottom: 8px;
+    gap: 10px;
+    margin-bottom: 6px;
 }
 
 .p-rank {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.7rem;
     color: var(--primary-color);
-    padding: 3px 8px;
+    padding: 3px 7px;
     border: 1px solid var(--primary-color);
     background: rgba(0, 212, 255, 0.05);
     white-space: nowrap;
+    flex-shrink: 0;
 }
 
 .p-name {
     font-family: 'Orbitron', sans-serif;
-    font-size: 1.15rem;
+    font-size: 1rem;
     color: #fff;
     letter-spacing: 2px;
     text-shadow: 0 0 15px rgba(0, 212, 255, 0.4);
 }
 
 .profile-sub {
-    font-size: 0.78rem;
+    font-size: 0.72rem;
     color: var(--text-dim);
     text-transform: uppercase;
-    letter-spacing: 3px;
+    letter-spacing: 2px;
     font-weight: 300;
-    margin-bottom: 8px;
+    margin-bottom: 6px;
 }
 
 .profile-tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 6px;
-    margin-top: 6px;
+    gap: 5px;
+    margin-top: 4px;
 }
 
 .char-tag {
-    font-size: 0.6rem;
+    font-size: 0.58rem;
     font-family: 'Orbitron', sans-serif;
     letter-spacing: 1px;
-    padding: 2px 7px;
+    padding: 2px 6px;
     border: 1px solid rgba(0, 212, 255, 0.3);
     color: var(--primary-color);
     background: rgba(0, 212, 255, 0.05);
@@ -219,21 +225,21 @@ body {
 
 .bio-header {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--primary-color);
-    margin-bottom: 22px;
-    letter-spacing: 4px;
+    margin-bottom: 16px;
+    letter-spacing: 3px;
     border-bottom: 1px solid rgba(0, 212, 255, 0.2);
-    padding-bottom: 12px;
+    padding-bottom: 10px;
     flex-shrink: 0;
 }
 
 .bio-footer {
-    margin-top: 16px;
-    font-size: 0.6rem;
+    margin-top: 12px;
+    font-size: 0.58rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     color: var(--text-dim);
     flex-shrink: 0;
 }
@@ -241,13 +247,13 @@ body {
 /* ─── CHANGELOG CARD (RIGHT) ─── */
 .changelog-card {
     position: absolute;
-    right: 120px;
-    top: 210px;
-    bottom: 180px;
-    width: 460px;
+    right: var(--side-pad);
+    top: var(--card-top);
+    bottom: var(--card-bot);
+    width: clamp(280px, 28vw, 440px);
     background: linear-gradient(135deg, rgba(10, 14, 20, 0.9) 0%, rgba(10, 14, 20, 0.5) 100%);
     border: 1px solid rgba(255, 152, 0, 0.25);
-    padding: 28px;
+    padding: 22px 24px;
     backdrop-filter: blur(25px);
     border-right: 4px solid var(--accent-color);
     box-shadow: -25px 25px 80px rgba(0, 0, 0, 0.9);
@@ -264,12 +270,12 @@ body {
 
 .changelog-header {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.75rem;
     color: var(--accent-color);
-    margin-bottom: 22px;
-    letter-spacing: 4px;
+    margin-bottom: 16px;
+    letter-spacing: 3px;
     border-bottom: 1px solid rgba(255, 152, 0, 0.2);
-    padding-bottom: 12px;
+    padding-bottom: 10px;
     display: flex;
     align-items: center;
     gap: 10px;
@@ -284,10 +290,10 @@ body {
 
 .changelog-version {
     margin-left: auto;
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     color: var(--text-dim);
     border: 1px solid rgba(255, 152, 0, 0.3);
-    padding: 2px 8px;
+    padding: 2px 7px;
     letter-spacing: 2px;
 }
 
@@ -299,16 +305,16 @@ body {
     scrollbar-color: var(--accent-color) transparent;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     padding-right: 4px;
 }
 
 .cl-entry {
     display: grid;
-    grid-template-columns: 80px 52px 1fr;
+    grid-template-columns: 72px 48px 1fr;
     align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
+    gap: 8px;
+    padding: 10px 12px;
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.04);
     border-left: 2px solid transparent;
@@ -327,19 +333,19 @@ body {
 }
 
 .cl-date {
-    font-size: 0.65rem;
+    font-size: 0.6rem;
     color: var(--text-dim);
     font-family: 'Orbitron', sans-serif;
-    letter-spacing: 1px;
+    letter-spacing: 0.5px;
     white-space: nowrap;
 }
 
 .cl-tag {
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.6rem;
+    font-size: 0.55rem;
     font-weight: 700;
     letter-spacing: 1px;
-    padding: 3px 7px;
+    padding: 3px 6px;
     text-align: center;
     border: 1px solid;
     white-space: nowrap;
@@ -351,18 +357,18 @@ body {
 .tag-remove { color: var(--tag-remove); border-color: var(--tag-remove); background: rgba(255, 68,  68, 0.07); }
 
 .cl-text {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     color: var(--text-main);
     line-height: 1.4;
     font-weight: 300;
 }
 
 .changelog-footer {
-    margin-top: 16px;
-    font-size: 0.6rem;
+    margin-top: 12px;
+    font-size: 0.58rem;
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: 8px;
     color: var(--text-dim);
     flex-shrink: 0;
 }
@@ -370,15 +376,15 @@ body {
 /* ─── LOADING BAR ─── */
 .loading-section {
     position: absolute;
-    bottom: 60px;
-    left: 120px;
-    right: 120px;
+    bottom: 36px;
+    left: var(--side-pad);
+    right: var(--side-pad);
 }
 
 .status-text {
-    margin-bottom: 12px;
+    margin-bottom: 10px;
     font-family: 'Orbitron', sans-serif;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     letter-spacing: 3px;
     color: var(--text-main);
     display: flex;
@@ -387,10 +393,10 @@ body {
 
 .progress-container {
     width: 100%;
-    height: 8px;
+    height: 6px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 12px;
+    border-radius: 10px;
     position: relative;
     overflow: hidden;
 }
@@ -399,15 +405,15 @@ body {
     position: absolute;
     top: 0; left: 0; height: 100%; width: 0%;
     background: linear-gradient(90deg, #00d4ff, #00ede7);
-    box-shadow: 0 0 25px var(--glow-color);
+    box-shadow: 0 0 20px var(--glow-color);
     transition: width 0.3s cubic-bezier(0.42, 0, 0.58, 1);
 }
 
 .file-indicator {
     font-family: 'Roboto', sans-serif;
-    font-size: 0.75rem;
+    font-size: 0.72rem;
     color: var(--text-dim);
-    margin-top: 10px;
+    margin-top: 8px;
     display: flex;
     justify-content: space-between;
     opacity: 0.8;
@@ -443,21 +449,21 @@ body {
 /* ─── MUSIC TOGGLE ─── */
 .music-toggle {
     position: fixed;
-    bottom: 28px;
-    right: 60px;
+    bottom: 20px;
+    right: var(--side-pad);
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
     color: var(--text-dim);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     z-index: 20;
 }
 
 .bar {
-    width: 4px;
+    width: 3px;
     background: var(--primary-color);
     animation: bar-dance 1s infinite ease-in-out alternate;
-    box-shadow: 0 0 8px var(--glow-color);
+    box-shadow: 0 0 6px var(--glow-color);
 }
 
 .bar:nth-child(1) { animation-duration: 0.5s; height: 5px; }
@@ -469,6 +475,6 @@ body {
 @keyframes bar-dance { 0% { height: 4px; } 100% { height: 22px; } }
 
 /* ─── SCROLLBAR ─── */
-::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar { width: 3px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.3); border-radius: 2px; }

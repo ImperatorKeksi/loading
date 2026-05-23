@@ -1,16 +1,11 @@
 // ═══════════════════════════════════════════════════════════
 // Shadow Squadron – GMod Loading Screen Script
-// Enthält: Changelog-System + Multi-Charakter-Profil-System
 // ═══════════════════════════════════════════════════════════
 
 var totalFiles = 100;
 var needsFiles = 0;
 var filesDone  = 0;
 
-// ─────────────────────────────────────────────────────────
-// CHANGELOG DATEN – hier einfach neue Einträge hinzufügen!
-// Format: { date: "TT.MM.JJJJ", type: "new|fix|update|remove", text: "..." }
-// ─────────────────────────────────────────────────────────
 var CHANGELOG = [
     { date: "23.05.2025", type: "new",    text: "Shadow Squadron Loadingscreen v3 – Changelog & Charakterprofil-System" },
     { date: "23.05.2025", type: "fix",    text: "Biometric Scanner Authentifizierungs-Bug behoben" },
@@ -24,31 +19,7 @@ var CHANGELOG = [
     { date: "12.05.2025", type: "fix",    text: "Crash beim Betreten des Server-Briefing-Raums behoben" },
 ];
 
-// Aktuelle Changelog-Version (wird oben rechts angezeigt)
 var CHANGELOG_VERSION = "v3.0";
-
-// ─────────────────────────────────────────────────────────
-// CHARAKTER-PROFIL DATEN
-// Wird normalerweise via SetCharacterProfiles() aus Lua befüllt.
-// Hier als Demo-Daten – kannst du in Lua überschreiben.
-// ─────────────────────────────────────────────────────────
-// Beispiel-Daten (werden durch Lua-Aufruf ersetzt):
-var DEFAULT_CHARS = [
-    {
-        rank: "CPT",
-        name: "REX",
-        unit: "501st Legion // Battle Company",
-        tags: ["Frontlinie", "Kommando", "ARC"],
-        active: true
-    },
-    {
-        rank: "SGT",
-        name: "CODY",
-        unit: "212th Attack Battalion // Ghost Company",
-        tags: ["Aufklärung", "Heavy"],
-        active: true
-    }
-];
 
 // ─────────────────────────────────────────────────────────
 // GARRY'S MOD HOOKS
@@ -84,7 +55,6 @@ function SetStatusChanged(status) {
 // ─────────────────────────────────────────────────────────
 // CHARAKTER-PROFIL SYSTEM
 // Lua-Aufruf: SetCharacterProfiles(jsonString)
-// JSON-Format: Array von Charakter-Objekten (s.o. DEFAULT_CHARS)
 // ─────────────────────────────────────────────────────────
 function SetCharacterProfiles(jsonString) {
     var chars;
@@ -98,31 +68,35 @@ function SetCharacterProfiles(jsonString) {
 }
 
 function renderCharacters(chars) {
-    var slots = ["slot-1", "slot-2", "slot-3"];
-    
-    slots.forEach(function(slotId, i) {
-        var slot = document.getElementById(slotId);
+    // Feste IDs aus dem HTML – keine dynamische querySelector-Magie
+    var cfg = [
+        { slot: "slot-1", rank: "char1-rank", name: "bio-name",   unit: "bio-unit",   tags: "char1-tags" },
+        { slot: "slot-2", rank: "char2-rank", name: "char2-name",  unit: "char2-unit", tags: "char2-tags" },
+        { slot: "slot-3", rank: "char3-rank", name: "char3-name",  unit: "char3-unit", tags: "char3-tags" },
+    ];
+
+    cfg.forEach(function(ids, i) {
+        var slot = document.getElementById(ids.slot);
         if (!slot) return;
-        
+
         if (i >= chars.length) {
             slot.classList.add("hidden");
             return;
         }
-        
+
         var c = chars[i];
         slot.classList.remove("hidden", "dim");
-        
-        slot.querySelector('[id$="-rank"], .p-rank').innerText = c.rank || "---";
-        slot.querySelector('[id$="-name"], .p-name').innerText = (c.name || "---").toUpperCase();
-        slot.querySelector('[id$="-unit"], .profile-sub').innerText = c.unit || "Unbekannte Einheit";
-        
-        // Tags rendern
-        var tagsEl = slot.querySelector('.profile-tags');
-        if (tagsEl && c.tags && c.tags.length) {
-            tagsEl.innerHTML = c.tags.map(function(t) {
-                return '<span class="char-tag">' + t + '</span>';
-            }).join('');
-        }
+
+        var rankEl = document.getElementById(ids.rank);
+        var nameEl = document.getElementById(ids.name);
+        var unitEl = document.getElementById(ids.unit);
+        var tagsEl = document.getElementById(ids.tags);
+
+        if (rankEl) rankEl.innerText = (c.rank || "---").toUpperCase();
+        if (nameEl) nameEl.innerText = (c.name || "---").toUpperCase();
+        if (unitEl) unitEl.innerText = c.unit || "Unbekannte Einheit";
+        if (tagsEl) tagsEl.innerHTML = (c.tags && c.tags.length)
+            ? c.tags.map(function(t){ return '<span class="char-tag">'+t+'</span>'; }).join('') : '';
     });
 }
 
@@ -150,22 +124,11 @@ function renderChangelog() {
 }
 
 // ─────────────────────────────────────────────────────────
-// WELCOME MESSAGE (Lua-Aufruf nach Authentifizierung)
+// WELCOME MESSAGE
 // ─────────────────────────────────────────────────────────
 function SetWelcomeMsg(playerName) {
     document.getElementById('status').innerText =
         "LINK ESTABLISHED: WILLKOMMEN ZURÜCK, " + playerName.toUpperCase();
-    
-    // Ersten Slot mit Spielername setzen falls noch nicht via SetCharacterProfiles gesetzt
-    var slot1 = document.getElementById('slot-1');
-    if (slot1) {
-        var nameEl = slot1.querySelector('.p-name');
-        if (nameEl && nameEl.innerText === "Authentifizierung...") {
-            slot1.querySelector('.p-rank').innerText = "---";
-            nameEl.innerText = playerName.toUpperCase();
-            slot1.querySelector('.profile-sub').innerText = "Einheit wird geladen...";
-        }
-    }
 }
 
 // ─────────────────────────────────────────────────────────
@@ -208,16 +171,12 @@ setInterval(function() {
 }, 1500);
 
 // ─────────────────────────────────────────────────────────
-// INIT
+// INIT – KEIN renderCharacters(DEFAULT_CHARS) hier!
+// Lua befüllt die Slots via SetCharacterProfiles()
 // ─────────────────────────────────────────────────────────
 window.onload = function() {
-    // Changelog rendern
     renderChangelog();
 
-    // Demo-Charaktere anzeigen (werden in GMod durch Lua überschrieben)
-    renderCharacters(DEFAULT_CHARS);
-
-    // Audio
     var audio = document.getElementById("loading-audio");
     if (audio) {
         audio.volume = 0.5;
