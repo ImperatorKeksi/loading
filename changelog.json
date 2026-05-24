@@ -1,10 +1,15 @@
 {
-	"version": "v1.0",
+	"version": "v2.0",
 	"entries": [
 		{
 			"date": "23.05.2026",
 			"type": "new",
 			"text": "Shadow Squadron Loadingscreen "
+		},
+		{
+			"date": "24.05.2026",
+			"type": "new",
+			"text": "Neue Clone Trooper Models hinzugefügt'"
 		}
 	]
 }
